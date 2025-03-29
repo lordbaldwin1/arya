@@ -5,19 +5,17 @@ import { getProductsByPageAndSort, getTotalProductQuantity } from "~/server/db/q
 
 const ITEMS_PER_PAGE = 50;
 
-export default async function Page(props: { 
-  searchParams: Promise<{ sort?: string; page?: string }> 
-}) {
+export default async function Page(props: { searchParams: Promise<{ sort?: string, page?: number }> }) {
+  const { sort, page } = await props.searchParams;
   try {
-    // Fetch params and total count in parallel
-    const [{ sort, page }, totalQuantityResult] = await Promise.all([
-      props.searchParams,
-      getTotalProductQuantity(),
-    ]);
 
     const sortOption = sort ?? "default";
-    const pageNumber = Number(page) || 1;
-    const productResult = await getProductsByPageAndSort(sortOption, pageNumber, ITEMS_PER_PAGE);
+    const pageNumber = page ?? 1;
+
+    const [productResult, totalQuantityResult] = await Promise.all([
+      getProductsByPageAndSort(sortOption, pageNumber, ITEMS_PER_PAGE),
+      getTotalProductQuantity(),
+    ]);
 
     if (!productResult.success) {
       return (
