@@ -5,6 +5,7 @@ import { z } from "zod";
 const cartSchema = z.array(
   z.object({
     productSlug: z.string(),
+    skuId: z.string(),
     quantity: z.number(),
     color: z.string(),
     size: z.string(),
@@ -46,10 +47,16 @@ export async function detailedCart() {
       ),
   });
 
-  const withQuantity = products.map((product) => ({
-    ...product,
-    quantity:
-      cart.find((item) => item.productSlug === product.slug)?.quantity ?? 0,
-  }));
+  const withQuantity = products.map((product) => {
+    const cartItem = cart.find((item) => item.productSlug === product.slug);
+    return {
+      ...product,
+      quantity: cartItem?.quantity ?? 0,
+      skuId: cartItem?.skuId ?? null,
+      color: cartItem?.color ?? null,
+      size: cartItem?.size ?? null,
+    };
+  });
+
   return withQuantity;
 }

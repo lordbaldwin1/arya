@@ -7,7 +7,8 @@ export async function addToCart(prevState: unknown, formData: FormData) {
   const productSlug = formData.get("productSlug");
   const productColor = formData.get("color");
   const productSize = formData.get("size");
-  if (typeof productSlug !== "string" || typeof productColor !== "string" || typeof productSize !== "string") {
+  const skuId = formData.get("skuId");
+  if (typeof productSlug !== "string" || typeof productColor !== "string" || typeof productSize !== "string" || typeof skuId !== "string") {
     return;
   }
 
@@ -28,7 +29,7 @@ export async function addToCart(prevState: unknown, formData: FormData) {
     });
     await updateCart(newCart);
   } else {
-    const newCart = [...prevCart, { productSlug, quantity: 1, color: productColor, size: productSize }];
+    const newCart = [...prevCart, { productSlug, skuId, quantity: 1, color: productColor, size: productSize }];
     await updateCart(newCart);
   }
 
@@ -38,17 +39,18 @@ export async function addToCart(prevState: unknown, formData: FormData) {
 export async function removeFromCart(formData: FormData) {
   const prevCart = await getCart();
   const productSlug = formData.get("productSlug");
+  const skuId = formData.get("skuId");
   const productColor = formData.get("color");
   const productSize = formData.get("size");
-  if (typeof productSlug !== "string" || typeof productColor !== "string" || typeof productSize !== "string") {
+  if (typeof productSlug !== "string" || typeof productColor !== "string" || typeof productSize !== "string" || typeof skuId !== "string") {
     return;
   }
   const itemAlreadyExists = prevCart.find(
-    (item) => item.productSlug === productSlug && item.color === productColor && item.size === productSize,
+    (item) => item.productSlug === productSlug && item.color === productColor && item.size === productSize && item.skuId === skuId,
   );
   if (!itemAlreadyExists) {
     return;
   }
-  const newCart = prevCart.filter((item) => item.productSlug !== productSlug || item.color !== productColor || item.size !== productSize);
+  const newCart = prevCart.filter((item) => item.productSlug !== productSlug || item.color !== productColor || item.size !== productSize || item.skuId !== skuId);
   await updateCart(newCart);
 }
