@@ -1,0 +1,55 @@
+import { cookies } from "next/headers";
+import { db } from "~/server/db";
+import { z } from "zod";
+
+const cartSchema = z.array(
+  z.object({
+    productSlug: z.string(),
+    quantity: z.number(),
+    color: z.string(),
+    size: z.string(),
+  }),
+);
+
+export type CartItem = z.infer<typeof cartSchema>[number];
+
+export async function updateCart(newItems: CartItem[]) {
+  (await cookies()).set("cart", JSON.stringify(newItems), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  });
+}
+
+export async function getCart() {
+  const cart = (await cookies()).get("cart");
+  if (!cart) {
+    return [];
+  }
+  try {
+    return cartSchema.parse(JSON.parse(cart.value));
+  } catch (error) {
+    console.error("Failed to parse cart cookie", error);
+    return [];
+  }
+}
+
+export async function detailedCart() {
+  const cart = await getCart();
+
+  const products = await db.query.products.findMany({
+    where: (products, { inArray }) =>
+      inArray(
+        products.slug,
+        cart.map((item) => item.productSlug),
+      ),
+  });
+
+  const withQuantity = products.map((product) => ({
+    ...product,
+    quantity:
+      cart.find((item) => item.productSlug === product.slug)?.quantity ?? 0,
+  }));
+  return withQuantity;
+}

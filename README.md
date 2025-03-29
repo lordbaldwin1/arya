@@ -1,29 +1,27 @@
-# Create T3 App
+# New Arya Jewelry Site
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+# TODO
+- [x] Add pagination/sorting
+- [] Add product pages
+- [] Add cart page
+- [] Setup stripe
+- [] Look into adding 'Quick-Add' to product cards (selecting size/color and display price on hover)
+- [] Look into testing
 
-## What's next? How do I make an app with this?
+# Understanding Pagination
+- Items per page: 50 (3 for testing)
+- Query db with URL page param, offset by items per page
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+# Understanding Sorting
+- Store sort order in URL param
+- Query db with sort order param
+- Sort orders: price-asc, price-desc, A-Z, Z-A
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+# Notes to get back into it
+- Hook up AddToCartForm in ProductOptions
+- Add a check in ProductOptions to check if sku.quantity > 0
+- Make sure to re-add stock when cart items are removed or expire (look into how to implement expiration!)
+- Restyle the product page/ProductOptions components
+- Create cart page to verify it is working
+- 
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
