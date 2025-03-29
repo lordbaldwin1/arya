@@ -23,5 +23,13 @@
 - Make sure to re-add stock when cart items are removed or expire (look into how to implement expiration!)
 - Restyle the product page/ProductOptions components
 - Create cart page to verify it is working
-- 
+
+Error in products page: Error: Dynamic server usage: Route /all couldn't be rendered statically because it used ``await searchParams`, `searchParams.then`, or similar`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at y (.next/server/chunks/617.js:1:71564)
+    at Object.get (.next/server/chunks/617.js:15:4505)
+    at d (.next/server/app/all/page.js:1:11320)
+    at stringify (<anonymous>) {
+  description: "Route /all couldn't be rendered statically because it used ``await searchParams`, `searchParams.then`, or similar`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
 
