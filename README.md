@@ -24,12 +24,34 @@
 - Restyle the product page/ProductOptions components
 - Create cart page to verify it is working
 
-Error in products page: Error: Dynamic server usage: Route /all couldn't be rendered statically because it used ``await searchParams`, `searchParams.then`, or similar`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
-    at y (.next/server/chunks/617.js:1:71564)
-    at Object.get (.next/server/chunks/617.js:15:4505)
-    at d (.next/server/app/all/page.js:1:11320)
-    at stringify (<anonymous>) {
-  description: "Route /all couldn't be rendered statically because it used ``await searchParams`, `searchParams.then`, or similar`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
-  digest: 'DYNAMIC_SERVER_USAGE'
-}
+# Understanding Product Page
+- Get detailed product information (product, skus, productimages)
+- Pass those arrays to ProductOptions
+- Display images, sizes, colors. Add state for selectedColor/selectedSize
+- To find the matching SKU, skus.find((sku) => sku.color === selectedColor && sku.size === selectedSize,);
+- Pass information to cart form which handles addToCart action
+
+# Handling Cart
+
+# Actions
+## `addToCart(prevState: unknown, formData: FormData)`
+- Pass slug, color, size, and skuId to addToCart action from props
+- Add to cart gets the previous cart, extracts form data, validates types, if the item already exists, update cart quantity.
+- Creates a new array and calls `updateCart(newCart)`
+## `removeFromCart(formData: FormData)`
+- gets previous cart, extracts form data, validates types, checks if item exists, if it does, filter it out with `prevCart.filter((item) => item.productSlug !== productSlug || item.color !== productColor || item.size !== productSize || item.skuId !== skuId);` then call updateCart(newCart)
+
+# Cookie/Query/Schema
+## `cartSchema`
+- Array: productSlug, skuId, quantity, color, size
+## `CartItem`
+- type is CartSchema but singular
+## `getCart()`
+- `const cart = (await cookies()).get("cart");`
+- `return cartSchema.parse(JSON.parse(cart.value));` to parse it into an array of type cartSchema
+## `detailedCart()`
+- calls `getCart()` to fetch cart
+- queries db using product slug
+- adds quantity and skuId (maybe doesn't need skuId??)
+
 
