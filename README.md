@@ -8,6 +8,9 @@
 - [] Look into adding 'Quick-Add' to product cards (selecting size/color and display price on hover)
 - [] Look into testing
 
+# Understanding Reservations
+- Need to get a UUID sessionId stored in cookie for each user when they add an item to cart
+
 # Understanding Pagination
 - Items per page: 50 (3 for testing)
 - Query db with URL page param, offset by items per page

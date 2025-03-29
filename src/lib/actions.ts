@@ -1,56 +1,241 @@
 "use server";
 
-import { getCart, updateCart } from "./cart";
+import {
+  getCart,
+  updateCart,
+  getAvailableStock,
+  getReservationQuantity,
+} from "./cart";
+import { cookies } from "next/headers";
+import crypto from "crypto";
+import { db } from "~/server/db";
+import { reservations, skus } from "~/server/db/schema";
+import { eq, and, sql } from "drizzle-orm";
 
 export async function addToCart(prevState: unknown, formData: FormData) {
-  const prevCart = await getCart();
-  const productSlug = formData.get("productSlug");
-  const productColor = formData.get("color");
-  const productSize = formData.get("size");
-  const skuId = formData.get("skuId");
-  if (typeof productSlug !== "string" || typeof productColor !== "string" || typeof productSize !== "string" || typeof skuId !== "string") {
-    return;
-  }
-
-  const itemAlreadyExists = prevCart.find(
-    (item) => item.productSlug === productSlug && item.color === productColor && item.size === productSize,
-  );
-
-  if (itemAlreadyExists) {
-    const newQuantity = itemAlreadyExists.quantity + 1;
-    const newCart = prevCart.map((item) => {
-      if (item.productSlug === productSlug) {
-        return {
-          ...item,
-          quantity: newQuantity,
-        };
-      }
-      return item;
+  try {
+    const sessionId =
+      (await cookies()).get("sessionId")?.value ?? crypto.randomUUID();
+    (await cookies()).set("sessionId", sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
-    await updateCart(newCart);
-  } else {
-    const newCart = [...prevCart, { productSlug, skuId, quantity: 1, color: productColor, size: productSize }];
-    await updateCart(newCart);
-  }
 
-  return "Item added to cart";
+    const prevCart = await getCart();
+    const productSlug = formData.get("productSlug");
+    const productColor = formData.get("color");
+    const productSize = formData.get("size");
+    const skuId = formData.get("skuId");
+    if (
+      typeof productSlug !== "string" ||
+      typeof productColor !== "string" ||
+      typeof productSize !== "string" ||
+      typeof skuId !== "string"
+    ) {
+      return;
+    }
+
+    const itemAlreadyExists = prevCart.find(
+      (item) =>
+        item.productSlug === productSlug &&
+        item.color === productColor &&
+        item.size === productSize,
+    );
+
+    if (itemAlreadyExists) {
+      const result = await updateReservation(sessionId, skuId);
+      if (result === "Not enough stock") {
+        return result;
+      }
+      const newQuantity = itemAlreadyExists.quantity + 1;
+      const newCart = prevCart.map((item) => {
+        if (item.productSlug === productSlug) {
+          return {
+            ...item,
+            quantity: newQuantity,
+          };
+        }
+        return item;
+      });
+      await updateCart(newCart);
+    } else {
+      const result = await createReservation(sessionId, skuId);
+      if (result === "Not enough stock") {
+        return result;
+      }
+      const newCart = [
+        ...prevCart,
+        {
+          productSlug,
+          skuId,
+          quantity: 1,
+          color: productColor,
+          size: productSize,
+        },
+      ];
+      await updateCart(newCart);
+    }
+
+    return "Item added to cart";
+  } catch (error) {
+    console.error("Failed to add to cart", error);
+    return "Failed to add item to cart";
+  }
 }
 
 export async function removeFromCart(formData: FormData) {
+  const sessionId = (await cookies()).get("sessionId")?.value;
+  if (!sessionId) {
+    return;
+  }
   const prevCart = await getCart();
   const productSlug = formData.get("productSlug");
   const skuId = formData.get("skuId");
   const productColor = formData.get("color");
   const productSize = formData.get("size");
-  if (typeof productSlug !== "string" || typeof productColor !== "string" || typeof productSize !== "string" || typeof skuId !== "string") {
+  if (
+    typeof productSlug !== "string" ||
+    typeof productColor !== "string" ||
+    typeof productSize !== "string" ||
+    typeof skuId !== "string"
+  ) {
     return;
   }
+
   const itemAlreadyExists = prevCart.find(
-    (item) => item.productSlug === productSlug && item.color === productColor && item.size === productSize && item.skuId === skuId,
+    (item) =>
+      item.productSlug === productSlug &&
+      item.color === productColor &&
+      item.size === productSize &&
+      item.skuId === skuId,
   );
   if (!itemAlreadyExists) {
     return;
   }
-  const newCart = prevCart.filter((item) => item.productSlug !== productSlug || item.color !== productColor || item.size !== productSize || item.skuId !== skuId);
+
+  const newCart = prevCart.filter(
+    (item) =>
+      item.productSlug !== productSlug ||
+      item.color !== productColor ||
+      item.size !== productSize ||
+      item.skuId !== skuId,
+  );
   await updateCart(newCart);
+  await deleteReservation(sessionId, skuId);
+}
+
+export async function updateReservation(sessionId: string, skuId: string) {
+  try {
+    await db.transaction(async (tx) => {
+      const existingReservation = await tx.query.reservations.findFirst({
+        where: (reservations, { and, eq }) => 
+          and(
+            eq(reservations.sessionId, sessionId),
+            eq(reservations.skuId, Number(skuId))
+          )
+      });
+
+      if (!existingReservation) {
+        return await createReservation(sessionId, skuId);
+      }
+
+      const skuQuantity = await getAvailableStock(skuId);
+      if (skuQuantity === 0) {
+        return "Not enough stock";
+      }
+
+      const newQuantity = existingReservation.quantity + 1;
+
+      await tx
+        .update(skus)
+        .set({
+          quantity: skuQuantity - newQuantity,
+        })
+        .where(eq(skus.id, Number(skuId)));
+
+      await tx
+        .update(reservations)
+        .set({
+          quantity: newQuantity,
+          updatedAt: Math.floor(Date.now() / 1000),
+          expiresAt: Math.floor(Date.now() / 1000) + 60 * 60,
+        })
+        .where(
+          and(
+            eq(reservations.sessionId, sessionId),
+            eq(reservations.skuId, Number(skuId)),
+          ),
+        );
+    });
+    return "Success";
+  } catch (error) {
+    console.error("Failed to update reservation", error);
+    throw error;
+  }
+}
+
+export async function createReservation(sessionId: string, skuId: string) {
+  try {
+    const skuQuantity = await getAvailableStock(skuId);
+    if (skuQuantity === 0) {
+      return "Not enough stock";
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(skus)
+        .set({
+          quantity: skuQuantity - 1,
+        })
+        .where(eq(skus.id, Number(skuId)));
+
+      await tx.insert(reservations).values({
+        sessionId,
+        skuId: Number(skuId),
+        quantity: 1,
+        expiresAt: Math.floor(Date.now() / 1000) + 60 * 60,
+      });
+    });
+    return "Success";
+  } catch (error) {
+    console.error("Failed to create reservation", error);
+    throw error; // Rethrow to handle in addToCart
+  }
+}
+
+export async function deleteReservation(sessionId: string, skuId: string) {
+  try {
+    await db.transaction(async (tx) => {
+      const reservation = await tx.query.reservations.findFirst({
+        where: (reservations, { eq, and }) =>
+          and(
+            eq(reservations.sessionId, sessionId),
+            eq(reservations.skuId, Number(skuId)),
+          ),
+      });
+
+      if (reservation) {
+        await tx
+          .update(skus)
+          .set({
+            quantity: sql`${skus.quantity} + ${reservation.quantity}`,
+          })
+          .where(eq(skus.id, Number(skuId)));
+
+        await tx
+          .delete(reservations)
+          .where(
+            and(
+              eq(reservations.sessionId, sessionId),
+              eq(reservations.skuId, Number(skuId)),
+            ),
+          );
+      }
+    });
+  } catch (error) {
+    console.error("Failed to delete reservation", error);
+    throw error; // Rethrow to handle in removeFromCart
+  }
 }

@@ -19,7 +19,7 @@ export async function updateCart(newItems: CartItem[]) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60, // 1 hour
   });
 }
 
@@ -59,4 +59,22 @@ export async function detailedCart() {
   });
 
   return withQuantity;
+}
+
+export async function getAvailableStock(skuId: string) {
+  const sku = await db.query.skus.findFirst({
+    where: (skus, { eq }) => eq(skus.id, Number(skuId)),
+  });
+  return sku?.quantity ?? 0;
+}
+
+export async function getReservationQuantity(sessionId: string, skuId: string) {
+  const reservation = await db.query.reservations.findFirst({
+    where: (reservations, { eq, and }) =>
+      and(
+        eq(reservations.sessionId, sessionId),
+        eq(reservations.skuId, Number(skuId)),
+      ),
+  });
+  return reservation?.quantity ?? 0;
 }

@@ -55,8 +55,8 @@ export type Sku = typeof skus.$inferSelect;
 
 export const reservations = createTable("reservations", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  sessionId: text("session_id").notNull(),
   skuId: integer("sku_id").notNull(),
-  userId: integer("user_id").notNull(),
   quantity: integer("quantity").notNull(),
   expiresAt: integer("expires_at").notNull(),
   createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
