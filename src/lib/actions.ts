@@ -4,7 +4,6 @@ import {
   getCart,
   updateCart,
   getAvailableStock,
-  getReservationQuantity,
 } from "./cart";
 import { cookies } from "next/headers";
 import crypto from "crypto";
@@ -24,12 +23,10 @@ export async function addToCart(prevState: unknown, formData: FormData) {
     });
 
     const prevCart = await getCart();
-    const productSlug = formData.get("productSlug");
     const productColor = formData.get("color");
     const productSize = formData.get("size");
     const skuId = formData.get("skuId");
     if (
-      typeof productSlug !== "string" ||
       typeof productColor !== "string" ||
       typeof productSize !== "string" ||
       typeof skuId !== "string"
@@ -39,7 +36,7 @@ export async function addToCart(prevState: unknown, formData: FormData) {
 
     const itemAlreadyExists = prevCart.find(
       (item) =>
-        item.productSlug === productSlug &&
+        item.skuId === skuId &&
         item.color === productColor &&
         item.size === productSize,
     );
@@ -49,35 +46,45 @@ export async function addToCart(prevState: unknown, formData: FormData) {
       if (result === "Not enough stock") {
         return result;
       }
-      const newQuantity = itemAlreadyExists.quantity + 1;
-      const newCart = prevCart.map((item) => {
-        if (item.productSlug === productSlug) {
+      try {
+        const newQuantity = itemAlreadyExists.quantity + 1;
+        const newCart = prevCart.map((item) => {
+          if (item.skuId === skuId) {
           return {
             ...item,
             quantity: newQuantity,
           };
         }
         return item;
-      });
-      await updateCart(newCart);
+        });
+        await updateCart(newCart);
+      } catch (error) {
+        await deleteReservation(sessionId, skuId);
+        console.error("Failed to update cart", error);
+        return "Failed to update cart";
+      }
     } else {
       const result = await createReservation(sessionId, skuId);
       if (result === "Not enough stock") {
         return result;
       }
-      const newCart = [
-        ...prevCart,
-        {
-          productSlug,
+      try {
+        const newCart = [
+          ...prevCart,
+          {
           skuId,
           quantity: 1,
           color: productColor,
           size: productSize,
         },
-      ];
-      await updateCart(newCart);
+        ];
+        await updateCart(newCart);
+      } catch (error) {
+        await deleteReservation(sessionId, skuId);
+        console.error("Failed to update cart", error);
+        return "Failed to update cart";
+      }
     }
-
     return "Item added to cart";
   } catch (error) {
     console.error("Failed to add to cart", error);
@@ -91,12 +98,10 @@ export async function removeFromCart(formData: FormData) {
     return;
   }
   const prevCart = await getCart();
-  const productSlug = formData.get("productSlug");
   const skuId = formData.get("skuId");
   const productColor = formData.get("color");
   const productSize = formData.get("size");
   if (
-    typeof productSlug !== "string" ||
     typeof productColor !== "string" ||
     typeof productSize !== "string" ||
     typeof skuId !== "string"
@@ -106,7 +111,6 @@ export async function removeFromCart(formData: FormData) {
 
   const itemAlreadyExists = prevCart.find(
     (item) =>
-      item.productSlug === productSlug &&
       item.color === productColor &&
       item.size === productSize &&
       item.skuId === skuId,
@@ -117,13 +121,17 @@ export async function removeFromCart(formData: FormData) {
 
   const newCart = prevCart.filter(
     (item) =>
-      item.productSlug !== productSlug ||
       item.color !== productColor ||
       item.size !== productSize ||
       item.skuId !== skuId,
   );
-  await updateCart(newCart);
-  await deleteReservation(sessionId, skuId);
+  try {
+    await updateCart(newCart);
+    await deleteReservation(sessionId, skuId);
+  } catch (error) {
+    await updateCart(prevCart);
+    console.error("Failed to remove from cart", error);
+  }
 }
 
 export async function updateReservation(sessionId: string, skuId: string) {
@@ -151,7 +159,7 @@ export async function updateReservation(sessionId: string, skuId: string) {
       await tx
         .update(skus)
         .set({
-          quantity: skuQuantity - newQuantity,
+          quantity: skuQuantity - 1,
         })
         .where(eq(skus.id, Number(skuId)));
 

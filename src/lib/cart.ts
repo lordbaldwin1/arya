@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
 import { db } from "~/server/db";
 import { z } from "zod";
+import { skus, products } from "~/server/db/schema";
+import { inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 const cartSchema = z.array(
   z.object({
-    productSlug: z.string(),
     skuId: z.string(),
     quantity: z.number(),
     color: z.string(),
@@ -39,26 +41,25 @@ export async function getCart() {
 export async function detailedCart() {
   const cart = await getCart();
 
-  const products = await db.query.products.findMany({
-    where: (products, { inArray }) =>
-      inArray(
-        products.slug,
-        cart.map((item) => item.productSlug),
-      ),
-  });
+  const cartItems = await db
+    .select({
+      product: products,
+      sku: skus,
+    })
+    .from(products)
+    .innerJoin(skus, eq(products.id, skus.productId))
+    .where(inArray(skus.id, cart.map((item) => Number(item.skuId))));
 
-  const withQuantity = products.map((product) => {
-    const cartItem = cart.find((item) => item.productSlug === product.slug);
+  return cartItems.map((item) => {
+    const cartItem = cart.find((c) => Number(c.skuId) === item.sku.id);
     return {
-      ...product,
+      ...item.product,
       quantity: cartItem?.quantity ?? 0,
-      skuId: cartItem?.skuId ?? null,
-      color: cartItem?.color ?? null,
-      size: cartItem?.size ?? null,
+      skuId: item.sku.id,
+      color: item.sku.color,
+      size: item.sku.size,
     };
   });
-
-  return withQuantity;
 }
 
 export async function getAvailableStock(skuId: string) {

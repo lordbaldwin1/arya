@@ -2,8 +2,8 @@
 
 # TODO
 - [x] Add pagination/sorting
-- [] Add product pages
-- [] Add cart page
+- [x] Add product pages
+- [x] Add cart page
 - [] Setup stripe
 - [] Look into adding 'Quick-Add' to product cards (selecting size/color and display price on hover)
 - [] Look into testing

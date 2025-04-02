@@ -21,7 +21,7 @@ export async function CartItems() {
       {cart.length > 0 ? (
         <div className="flex flex-col space-y-10">
           {cart.map((item) => (
-            <CartItem key={item.slug} product={item} />
+            <CartItem key={item.skuId} product={item} />
           ))}
         </div>
       ) : (
@@ -58,6 +58,7 @@ function CartItem({ product }: { product: CartItem }) {
           <div className="max-w-[100px] flex-grow sm:max-w-full">
             <h2 className="font-semibold">{product.name}</h2>
             <p className="text-sm md:text-base">{product.description}</p>
+            <p className="text-sm md:text-base">{product.color} {product.size}</p>
           </div>
         </div>
       </Link>

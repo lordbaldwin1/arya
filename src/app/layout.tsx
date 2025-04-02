@@ -4,6 +4,8 @@ import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "~/components/theme-provider";
 import Navbar from "~/components/Navbar";
+import { Toaster } from "~/components/ui/sonner";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Arya",
@@ -28,8 +30,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Navbar />
+          </Suspense>
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

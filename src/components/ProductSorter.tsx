@@ -35,12 +35,12 @@ export default function ProductSorter() {
   return (
     <>
       <Select onValueChange={handleSortUrlChange}>
-        <SelectTrigger>
+        <SelectTrigger className="cursor-pointer">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
           {SORT_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem className="cursor-pointer" key={option.value} value={option.value}>
               {option.label}
             </SelectItem>
           ))}

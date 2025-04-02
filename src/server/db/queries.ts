@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, like, sql } from "drizzle-orm";
 import { db } from "./index";
 import { categories, products, skus, productImages } from "./schema";
 
@@ -110,5 +110,18 @@ export async function getTotalProductQuantity() {
   } catch (error) {
     console.error("Failed to fetch total product quantity", error);
     return { success: false, error: error };
+  }
+}
+
+export async function getSearchResults(query: string) {
+  try {
+    const results = await db
+      .select()
+      .from(products)
+      .where(like(products.name, `%${query}%`));
+    return results;
+  } catch (error) {
+    console.error("Failed to fetch search results", error);
+    return [];
   }
 }
