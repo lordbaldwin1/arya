@@ -39,7 +39,7 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Link prefetch={true} href="/categories/rings">
-                <Button className="bg-black text-white hover:bg-black/90">Shop Now</Button>
+                <Button variant="default">Shop Now</Button>
               </Link>
             </div>
           </div>

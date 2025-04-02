@@ -5,6 +5,7 @@ import { addToCart } from "~/lib/actions";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
 
 export function AddToCartForm({
   productSlug,
@@ -59,17 +60,13 @@ export function AddToCartForm({
       <input type="hidden" name="color" value={color} />
       <input type="hidden" name="size" value={size} />
       <input type="hidden" name="skuId" value={skuId} />
-      <button
+      <Button
         type="submit"
         disabled={isDisabled}
-        className={`w-full rounded-md px-4 py-2 ${
-          isDisabled
-            ? "bg-gray-200 text-gray-500"
-            : "bg-black text-white hover:bg-gray-500 hover:cursor-pointer"
-        }`}
+        variant={isDisabled ? "secondary" : "default"}
       >
         {getButtonText()}
-      </button>
+      </Button>
     </form>
   );
 }
