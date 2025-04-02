@@ -2,6 +2,7 @@ import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { getCategories, getHomePageProducts } from "~/server/db/queries";
+
 export default async function HomePage() {
   const [productResult, categoriesResult] = await Promise.all([
     getHomePageProducts(),
@@ -37,7 +38,7 @@ export default async function HomePage() {
               Explore our carefully selected rings to bring a touch of elegance to your life.
             </p>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Link href="/categories/rings">
+              <Link prefetch={true} href="/categories/rings">
                 <Button className="bg-black text-white hover:bg-black/90">Shop Now</Button>
               </Link>
             </div>
@@ -61,7 +62,7 @@ export default async function HomePage() {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mx-auto px-4 py-12 md:px-6 md:py-16 lg:py-20">
         {products?.map((product) => (
           <div key={product.id} className="group relative overflow-hidden rounded-lg border">
-            <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10">
+            <Link prefetch={true} href={`/product/${product.slug}`} className="absolute inset-0 z-10">
               <span className="sr-only">View Product</span>
             </Link>
             <Image
@@ -88,6 +89,7 @@ export default async function HomePage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {categories?.map((category) => (
             <Link 
+              prefetch={true}
               key={category.id} 
               href={`/categories/${category.slug}`} 
               className="group relative overflow-hidden rounded-lg"
@@ -116,17 +118,17 @@ export default async function HomePage() {
             <h3 className="mb-4 text-lg font-semibold">Shop</h3>
             <ul className="grid gap-2 text-sm">
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   New Arrivals
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Best Sellers
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Sale
                 </Link>
               </li>
@@ -136,17 +138,17 @@ export default async function HomePage() {
             <h3 className="mb-4 text-lg font-semibold">About</h3>
             <ul className="grid gap-2 text-sm">
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Sustainability
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Careers
                 </Link>
               </li>
@@ -156,17 +158,17 @@ export default async function HomePage() {
             <h3 className="mb-4 text-lg font-semibold">Support</h3>
             <ul className="grid gap-2 text-sm">
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   FAQs
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Shipping & Returns
                 </Link>
               </li>
@@ -176,17 +178,17 @@ export default async function HomePage() {
             <h3 className="mb-4 text-lg font-semibold">Connect</h3>
             <ul className="grid gap-2 text-sm">
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Instagram
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Twitter
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-900">
+                <Link prefetch={true} href="#" className="text-gray-500 hover:text-gray-900">
                   Facebook
                 </Link>
               </li>

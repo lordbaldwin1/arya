@@ -47,12 +47,14 @@ export function NonSearchNavbar({
       <div className="mx-4 flex items-center justify-between lg:mx-24">
         <div className="hidden items-baseline justify-center gap-4 md:flex lg:flex">
           <Link
+            prefetch={true}
             className="text-md font-semibold hover:text-gray-500"
             href="/categories"
           >
             Categories
           </Link>
           <Link
+            prefetch={true}
             className="text-md font-semibold hover:text-gray-500"
             href="/all"
           >
@@ -131,14 +133,18 @@ export function NonSearchNavbar({
         </Sheet>
 
         <div className="absolute left-1/2 -translate-x-1/2 items-center justify-center gap-4">
-          <Link className="text-2xl font-bold hover:text-gray-500" href="/">
+          <Link
+            prefetch={true}
+            className="text-2xl font-bold hover:text-gray-500"
+            href="/"
+          >
             Arya
           </Link>
         </div>
 
         <div className="flex items-center justify-end gap-4">
           <Search isOpen={isSearchOpen} handleOpenSearch={handleOpenSearch} />
-          <Link className="hover:text-gray-500" href="/cart">
+          <Link prefetch={true} className="hover:text-gray-500" href="/cart">
             <ShoppingBagIcon className="h-5 w-5" />
           </Link>
           <LightModeToggle />
