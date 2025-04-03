@@ -49,6 +49,10 @@ export function SearchNavBar({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
     if (searchTerm.length === 0) {
       setSearchResults([]);
     } else {

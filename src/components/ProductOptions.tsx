@@ -39,26 +39,28 @@ export function ProductOptions(props: {
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
         {/* Image Column */}
         <div className="mx-auto mb-8 w-full max-w-2xl lg:max-w-none lg:mb-0 lg:px-0">
-          <Carousel className="w-full">
-            <CarouselContent>
-              {images.map((image) => (
-                <CarouselItem key={image.id}>
-                  <div className="relative aspect-square overflow-hidden rounded-md">
-                    <Image
-                      src={image.imageUrl}
-                      alt={product.name}
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 45vw"
-                      fill
-                      priority={true}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
-            <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
-          </Carousel>
+          <div className="relative mx-auto max-w-[500px]">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {images.map((image) => (
+                  <CarouselItem key={image.id}>
+                    <div className="relative aspect-square overflow-hidden rounded-md">
+                      <Image
+                        src={image.imageUrl}
+                        alt={product.name}
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 45vw"
+                        fill
+                        priority={true}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute -left-0 top-1/2 -translate-y-1/2" />
+              <CarouselNext className="absolute -right-0 top-1/2 -translate-y-1/2" />
+            </Carousel>
+          </div>
         </div>
 
         {/* Options Column */}
