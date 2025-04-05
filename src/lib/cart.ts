@@ -21,7 +21,7 @@ export async function updateCart(newItems: CartItem[]) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 60 * 60, // 1 hour
+    maxAge: 60 * 60 * 24, // 1 day (24 hours)
   });
 }
 

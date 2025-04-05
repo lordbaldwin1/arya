@@ -172,7 +172,7 @@ export async function updateReservation(sessionId: string, skuId: number) {
         .set({
           quantity: newQuantity,
           updatedAt: Math.floor(Date.now() / 1000),
-          expiresAt: Math.floor(Date.now() / 1000) + 60 * 60,
+          expiresAt: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
         })
         .where(
           and(
@@ -207,7 +207,7 @@ export async function createReservation(sessionId: string, skuId: number) {
         sessionId,
         skuId,
         quantity: 1,
-        expiresAt: Math.floor(Date.now() / 1000) + 60 * 60, 
+        expiresAt: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 1 day
       });
     });
     return "Success";
