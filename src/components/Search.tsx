@@ -21,7 +21,7 @@ export function Search({
   return (
     <div>
       {isOpen ? (
-        <SearchNavBar isOpen={isOpen} handleOpenSearch={handleOpenSearch} />
+        <SearchNavBar handleOpenSearch={handleOpenSearch} />
       ) : (
         <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
           <SearchIcon className="h-4 w-4" />
@@ -32,10 +32,8 @@ export function Search({
 }
 
 export function SearchNavBar({
-  isOpen,
   handleOpenSearch,
 }: {
-  isOpen: boolean;
   handleOpenSearch: () => void;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
