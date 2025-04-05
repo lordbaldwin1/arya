@@ -4,9 +4,17 @@
 - [x] Add pagination/sorting
 - [x] Add product pages
 - [x] Add cart page
+- [] Add cron job for reservation expiration
 - [] Setup stripe
 - [] Look into adding 'Quick-Add' to product cards (selecting size/color and display price on hover)
 - [] Look into testing
+
+# Understanding Reservation Expiration
+- What needs to update?
+- Cookies (user's cart) automatically expire
+- Reservation expire, stock added back to SKU
+- When Cron Job run, check all reservations table, add all of that stock back then delete reservations.
+- Add a button to test the stock updating for now.
 
 # Understanding Reservations
 - Need to get a UUID sessionId stored in cookie for each user when they add an item to cart

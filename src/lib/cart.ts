@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 
 const cartSchema = z.array(
   z.object({
-    skuId: z.string(),
+    skuId: z.number(),
     quantity: z.number(),
     color: z.string(),
     size: z.string(),
@@ -48,10 +48,10 @@ export async function detailedCart() {
     })
     .from(products)
     .innerJoin(skus, eq(products.id, skus.productId))
-    .where(inArray(skus.id, cart.map((item) => Number(item.skuId))));
+    .where(inArray(skus.id, cart.map((item) => item.skuId)));
 
   return cartItems.map((item) => {
-    const cartItem = cart.find((c) => Number(c.skuId) === item.sku.id);
+    const cartItem = cart.find((c) => c.skuId === item.sku.id);
     return {
       ...item.product,
       quantity: cartItem?.quantity ?? 0,
@@ -62,19 +62,19 @@ export async function detailedCart() {
   });
 }
 
-export async function getAvailableStock(skuId: string) {
+export async function getAvailableStock(skuId: number) {
   const sku = await db.query.skus.findFirst({
-    where: (skus, { eq }) => eq(skus.id, Number(skuId)),
+    where: (skus, { eq }) => eq(skus.id, skuId),
   });
   return sku?.quantity ?? 0;
 }
 
-export async function getReservationQuantity(sessionId: string, skuId: string) {
+export async function getReservationQuantity(sessionId: string, skuId: number) {
   const reservation = await db.query.reservations.findFirst({
     where: (reservations, { eq, and }) =>
       and(
         eq(reservations.sessionId, sessionId),
-        eq(reservations.skuId, Number(skuId)),
+        eq(reservations.skuId, skuId),
       ),
   });
   return reservation?.quantity ?? 0;

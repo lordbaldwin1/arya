@@ -49,7 +49,7 @@ export default async function HomePage() {
               alt="Featured Product"
               width={400}
               height={400}
-              className="rounded-lg object-cover"
+              className="rounded-lg object-cover w-full h-auto"
               priority
             />
           </div>

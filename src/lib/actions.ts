@@ -25,11 +25,15 @@ export async function addToCart(prevState: unknown, formData: FormData) {
     const prevCart = await getCart();
     const productColor = formData.get("color");
     const productSize = formData.get("size");
-    const skuId = formData.get("skuId");
+    const skuId = Number(formData.get("skuId"));
+    const availableStock = await getAvailableStock(skuId);
+    if (availableStock === 0) {
+      return "Item just sold out";
+    }
     if (
       typeof productColor !== "string" ||
       typeof productSize !== "string" ||
-      typeof skuId !== "string"
+      isNaN(skuId)
     ) {
       return;
     }
@@ -98,13 +102,13 @@ export async function removeFromCart(formData: FormData) {
     return;
   }
   const prevCart = await getCart();
-  const skuId = formData.get("skuId");
+  const skuId = Number(formData.get("skuId"));
   const productColor = formData.get("color");
   const productSize = formData.get("size");
   if (
     typeof productColor !== "string" ||
     typeof productSize !== "string" ||
-    typeof skuId !== "string"
+    isNaN(skuId)
   ) {
     return;
   }
@@ -134,14 +138,14 @@ export async function removeFromCart(formData: FormData) {
   }
 }
 
-export async function updateReservation(sessionId: string, skuId: string) {
+export async function updateReservation(sessionId: string, skuId: number) {
   try {
     await db.transaction(async (tx) => {
       const existingReservation = await tx.query.reservations.findFirst({
         where: (reservations, { and, eq }) => 
           and(
             eq(reservations.sessionId, sessionId),
-            eq(reservations.skuId, Number(skuId))
+            eq(reservations.skuId, skuId)
           )
       });
 
@@ -161,7 +165,7 @@ export async function updateReservation(sessionId: string, skuId: string) {
         .set({
           quantity: skuQuantity - 1,
         })
-        .where(eq(skus.id, Number(skuId)));
+        .where(eq(skus.id, skuId));
 
       await tx
         .update(reservations)
@@ -173,7 +177,7 @@ export async function updateReservation(sessionId: string, skuId: string) {
         .where(
           and(
             eq(reservations.sessionId, sessionId),
-            eq(reservations.skuId, Number(skuId)),
+            eq(reservations.skuId, skuId),
           ),
         );
     });
@@ -184,7 +188,7 @@ export async function updateReservation(sessionId: string, skuId: string) {
   }
 }
 
-export async function createReservation(sessionId: string, skuId: string) {
+export async function createReservation(sessionId: string, skuId: number) {
   try {
     const skuQuantity = await getAvailableStock(skuId);
     if (skuQuantity === 0) {
@@ -197,13 +201,13 @@ export async function createReservation(sessionId: string, skuId: string) {
         .set({
           quantity: skuQuantity - 1,
         })
-        .where(eq(skus.id, Number(skuId)));
+        .where(eq(skus.id, skuId));
 
       await tx.insert(reservations).values({
         sessionId,
-        skuId: Number(skuId),
+        skuId,
         quantity: 1,
-        expiresAt: Math.floor(Date.now() / 1000) + 60 * 60,
+        expiresAt: Math.floor(Date.now() / 1000) + 60 * 60, 
       });
     });
     return "Success";
@@ -213,14 +217,14 @@ export async function createReservation(sessionId: string, skuId: string) {
   }
 }
 
-export async function deleteReservation(sessionId: string, skuId: string) {
+export async function deleteReservation(sessionId: string, skuId: number) {
   try {
     await db.transaction(async (tx) => {
       const reservation = await tx.query.reservations.findFirst({
         where: (reservations, { eq, and }) =>
           and(
             eq(reservations.sessionId, sessionId),
-            eq(reservations.skuId, Number(skuId)),
+            eq(reservations.skuId, skuId),
           ),
       });
 
@@ -230,14 +234,14 @@ export async function deleteReservation(sessionId: string, skuId: string) {
           .set({
             quantity: sql`${skus.quantity} + ${reservation.quantity}`,
           })
-          .where(eq(skus.id, Number(skuId)));
+          .where(eq(skus.id, skuId));
 
         await tx
           .delete(reservations)
           .where(
             and(
               eq(reservations.sessionId, sessionId),
-              eq(reservations.skuId, Number(skuId)),
+              eq(reservations.skuId, skuId),
             ),
           );
       }

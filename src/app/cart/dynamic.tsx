@@ -10,6 +10,7 @@ type CartItem = Awaited<ReturnType<typeof getCartItems>>[number];
 
 export async function CartItems() {
   const cart = await getCartItems();
+
   return (
     <>
       {cart.length > 0 && (
@@ -37,11 +38,12 @@ function CartItem({ product }: { product: CartItem }) {
   }
   // limit to 2 decimal places
   const cost = (Number(product.price) * product.quantity).toFixed(2);
+
   return (
     <div className="flex flex-row items-center justify-between border-t border-gray-200 pt-4">
       <Link
         prefetch={true}
-        href={`/products/${product.slug}`}
+        href={`/product/${product.slug}`}
       >
         <div className="flex flex-row space-x-2">
           <div className="flex h-24 w-24 items-center justify-center bg-gray-100">

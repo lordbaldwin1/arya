@@ -131,7 +131,7 @@ export function ProductOptions(props: {
           {/* Add to Cart Button */}
           <AddToCartForm
             productSlug={product.slug}
-            skuId={selectedSku?.id?.toString() ?? ""}
+            skuId={selectedSku?.id ?? 0}
             color={selectedColor}
             size={selectedSize}
             selectedSku={selectedSku}

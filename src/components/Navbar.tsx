@@ -89,43 +89,18 @@ export function NonSearchNavbar({
                   </button>
                 </Link>
               </SheetClose>
-              <SheetClose asChild>
-                <Link prefetch={true} href="/products">
+              <SheetClose asChild aria-label="Close navigation menu">
+                <Link prefetch={true} href="/all">
                   <button className="tracking-wider transition-colors hover:text-gray-600">
-                    SHOP ALL
+                    ALL PRODUCTS
                   </button>
                 </Link>
               </SheetClose>
-              <SheetClose asChild>
-                <Link prefetch={true} href="/collections">
-                  <button className="tracking-wider transition-colors hover:text-gray-600">
-                    COLLECTIONS
-                  </button>
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
+              <SheetClose asChild aria-label="Close navigation menu">
                 <Link prefetch={true} href="/categories">
                   <button className="tracking-wider transition-colors hover:text-gray-600">
                     CATEGORIES
                   </button>
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link
-                  prefetch={true}
-                  href="/wishlist"
-                  className="transition-colors hover:text-gray-600"
-                >
-                  WISHLIST
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link
-                  prefetch={true}
-                  href="/cart"
-                  className="transition-colors hover:text-gray-600"
-                >
-                  CART
                 </Link>
               </SheetClose>
             </SheetHeader>

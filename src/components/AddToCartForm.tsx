@@ -17,7 +17,7 @@ export function AddToCartForm({
   children,
 }: {
   productSlug: string;
-  skuId: string;
+  skuId: number;
   color: string;
   size: string;
   selectedSku: { quantity: number } | undefined;
