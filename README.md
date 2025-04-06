@@ -4,8 +4,8 @@
 - [x] Add pagination/sorting
 - [x] Add product pages
 - [x] Add cart page
-- [] Add cron job for reservation expiration
-- [] Setup stripe
+- [x] Add cron job for reservation expiration
+- [x] Setup stripe
 - [] Look into adding 'Quick-Add' to product cards (selecting size/color and display price on hover)
 - [] Look into testing
 

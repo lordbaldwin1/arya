@@ -33,7 +33,7 @@ export default function CategoryCard(props: CategoryCardProps) {
                 quality={65}
                 priority
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                className="object-cover transition-opacity hover:opacity-90"
+                className="object-cover transition-opacity hover:opacity-90 rounded-sm"
               />
             </Link>
           </div>

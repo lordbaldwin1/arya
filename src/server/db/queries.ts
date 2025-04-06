@@ -12,6 +12,31 @@ export async function getProducts() {
   }
 }
 
+export async function getCategoryId(category: string) {
+  try {
+    const result = await db.query.categories.findFirst({
+      where: (categories, { eq }) => eq(categories.slug, category),
+    });
+    if (!result) {
+      return { success: false, error: "Category not found" };
+    }
+    return { success: true, data: result.id };
+  } catch (error) {
+    console.error("Failed to fetch category data", error);
+    return { success: false, error: error };
+  }
+}
+
+export async function getProductsByCategoryId(categoryId: number) {
+  try {
+    const result = await db.select().from(products).where(eq(products.categoryId, categoryId));
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Failed to fetch products by category id", error);
+    return { success: false, error: error };
+  }
+}
+
 export async function getProductDetailsBySlug(slug: string) {
   try {
     const product = await db
