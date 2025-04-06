@@ -110,7 +110,7 @@ export function NonSearchNavbar({
         <div className="absolute left-1/2 -translate-x-1/2 items-center justify-center gap-4">
           <Link
             prefetch={true}
-            className="text-2xl font-bold hover:text-gray-500"
+            className="text-2xl font-bold"
             href="/"
           >
             Arya
