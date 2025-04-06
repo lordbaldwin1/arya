@@ -9,7 +9,6 @@ import {
 } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { env } from '~/env'
-import { useRouter } from 'next/navigation'
 
 // Make sure to call loadStripe outside of a component's render to avoid
 // recreating the Stripe object on every render.
@@ -19,7 +18,6 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
-  const router = useRouter();
 
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);

@@ -98,28 +98,6 @@ export async function addToCart(prevState: unknown, formData: FormData) {
   }
 }
 
-export async function wipeCartForSession() {
-  "use server";
-  
-  const sessionId = (await cookies()).get("sessionId")?.value;
-  if (!sessionId) {
-    throw new Error("No session ID found");
-  }
-
-  // Set cart cookie to expire immediately
-  (await cookies()).set("cart", "", {
-    maxAge: 0,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-
-  // Delete reservations from database
-  await db.transaction(async (tx) => {
-    await tx.delete(reservations).where(eq(reservations.sessionId, sessionId));
-  });
-}
-
 export async function removeFromCart(formData: FormData) {
   const sessionId = (await cookies()).get("sessionId")?.value;
   if (!sessionId) {

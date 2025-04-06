@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
 import { stripe } from '~/lib/stripe'
-import { wipeCartForSession } from '~/lib/actions'
 
 export async function POST(req: Request) {
   let event

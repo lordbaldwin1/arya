@@ -28,7 +28,7 @@ export function SuccessContent({ paymentIntentId }: SuccessContentProps) {
         // Retry up to 3 times
         if (retryCount < 3) {
           setRetryCount(prev => prev + 1);
-          setTimeout(clearCart, 1000 * retryCount); // Exponential backoff
+          setTimeout(() => void clearCart(), 1000 * retryCount); // Exponential backoff
           return;
         }
         
@@ -38,7 +38,7 @@ export function SuccessContent({ paymentIntentId }: SuccessContentProps) {
       }
     };
 
-    clearCart();
+    void clearCart();
   }, [retryCount]);
 
   return (

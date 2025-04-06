@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CartItems, TotalCost } from "./dynamic";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Order",
