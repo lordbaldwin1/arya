@@ -34,7 +34,6 @@ export async function POST(req: Request) {
         case 'payment_intent.succeeded':
           data = event.data.object
           console.log(`Payment status: ${data.status}`)
-          await wipeCartForSession()
           break
         default:
           throw new Error(`Unhandled event: ${event.type}`)

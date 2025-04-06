@@ -3,9 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export function SuccessContent() {
+interface SuccessContentProps {
+  paymentIntentId: string;
+}
+
+export function SuccessContent({ paymentIntentId }: SuccessContentProps) {
   const [isClearingCart, setIsClearingCart] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const clearCart = async () => {
@@ -19,6 +24,14 @@ export function SuccessContent() {
         }
       } catch (error) {
         console.error("Failed to clear cart:", error);
+        
+        // Retry up to 3 times
+        if (retryCount < 3) {
+          setRetryCount(prev => prev + 1);
+          setTimeout(clearCart, 1000 * retryCount); // Exponential backoff
+          return;
+        }
+        
         setError("Failed to clear cart. Please try again later.");
       } finally {
         setIsClearingCart(false);
@@ -26,7 +39,7 @@ export function SuccessContent() {
     };
 
     clearCart();
-  }, []);
+  }, [retryCount]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh]">
@@ -35,8 +48,13 @@ export function SuccessContent() {
         <p className="text-muted-foreground">
           Thank you for your purchase. Your order has been confirmed.
         </p>
+        <p className="text-sm text-muted-foreground">
+          Order ID: {paymentIntentId}
+        </p>
         {isClearingCart && (
-          <p className="text-muted-foreground">Clearing your cart...</p>
+          <p className="text-muted-foreground">
+            {retryCount > 0 ? "Retrying to clear cart..." : "Clearing your cart..."}
+          </p>
         )}
         {error && (
           <p className="text-destructive">{error}</p>

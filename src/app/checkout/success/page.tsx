@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { SuccessContent } from "~/components/SuccessContent";
+import { stripe } from "~/lib/stripe";
 
 export default async function SuccessPage({
   searchParams,
@@ -13,5 +14,17 @@ export default async function SuccessPage({
     redirect("/");
   }
 
-  return <SuccessContent />;
+  // Verify the payment intent with Stripe
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    
+    if (paymentIntent.status !== "succeeded") {
+      redirect("/");
+    }
+  } catch (error) {
+    console.error("Failed to verify payment:", error);
+    redirect("/");
+  }
+
+  return <SuccessContent paymentIntentId={paymentIntentId} />;
 }

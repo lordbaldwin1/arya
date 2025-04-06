@@ -75,7 +75,7 @@ function PaymentForm() {
       <button 
         disabled={isLoading || !stripe || !elements} 
         id="submit"
-        className="w-full rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-md bg-black px-4 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span id="button-text">
           {isLoading ? "Processing..." : "Pay now"}
