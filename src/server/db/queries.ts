@@ -12,7 +12,17 @@ export async function getProducts() {
   }
 }
 
-export async function getCategoryId(category: string) {
+export async function getCategoryCount() {
+  try {
+    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(categories);
+    return { success: true, data: result[0]?.count ?? 0 };
+  } catch (error) {
+    console.error("Failed to fetch category count", error);
+    return { success: false, error: error };
+  }
+}
+
+export async function getCategoryDetails(category: string) {
   try {
     const result = await db.query.categories.findFirst({
       where: (categories, { eq }) => eq(categories.slug, category),
@@ -20,19 +30,9 @@ export async function getCategoryId(category: string) {
     if (!result) {
       return { success: false, error: "Category not found" };
     }
-    return { success: true, data: result.id };
-  } catch (error) {
-    console.error("Failed to fetch category data", error);
-    return { success: false, error: error };
-  }
-}
-
-export async function getProductsByCategoryId(categoryId: number) {
-  try {
-    const result = await db.select().from(products).where(eq(products.categoryId, categoryId));
     return { success: true, data: result };
   } catch (error) {
-    console.error("Failed to fetch products by category id", error);
+    console.error("Failed to fetch category data", error);
     return { success: false, error: error };
   }
 }
@@ -106,6 +106,45 @@ export async function getProductsByPageAndSort(
     return { success: false, error: error };
   }
 }
+
+export async function getProductsByCategoryId(categoryId: number, sort: string, page: number, itemsPerPage: number) {
+  try {
+    console.log("categoryId", categoryId);
+    console.log("sort", sort);
+    console.log("page", page);
+    console.log("itemsPerPage", itemsPerPage);
+    const offset = (page - 1) * itemsPerPage;
+    const result = await db
+      .select()
+      .from(products)
+      .where(eq(products.categoryId, categoryId))
+      .limit(itemsPerPage)
+      .offset(offset);
+
+      if (sort === "price-asc") {
+        return { success: true, data: result.sort((a, b) => a.price - b.price) };
+      } else if (sort === "price-desc") {
+        return { success: true, data: result.sort((a, b) => b.price - a.price) };
+      } else if (sort === "newest") {
+        return {
+          success: true,
+          data: result.sort((a, b) => b.createdAt - a.createdAt),
+        };
+      } else if (sort === "oldest") {
+        return {
+          success: true,
+          data: result.sort((a, b) => a.createdAt - b.createdAt),
+        };
+      } else {
+        return { success: true, data: result };
+      }
+
+  } catch (error) {
+    console.error("Failed to fetch products by category id", error);
+    return { success: false, error: error };
+  }
+}
+
 export async function getCategories() {
   try {
     const result = await db.select().from(categories);
@@ -138,6 +177,18 @@ export async function getTotalProductQuantity() {
   }
 }
 
+export async function getTotalProductQuantityByCategoryId(categoryId: number) {
+  try {
+    const result = await db
+      .select({ total: sql<number>`COUNT(*)` })
+      .from(products)
+      .where(eq(products.categoryId, categoryId));
+    return { success: true, data: result[0]?.total ?? 0 };
+  } catch (error) {
+    console.error("Failed to fetch total product quantity by category id", error);
+    return { success: false, error: error };
+  }
+}
 export async function getSearchResults(query: string) {
   try {
     const results = await db

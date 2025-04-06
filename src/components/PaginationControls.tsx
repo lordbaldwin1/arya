@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -17,15 +17,18 @@ export default function PaginationControls(props: {
   itemsPerPage: number;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
   if (props.totalPages <= 1) {
     return (
-      <div className="flex justify-center mt-4 mb-4">
+      <div className="flex justify-center mt-16">
         <p className="text-gray-500">No more products to show.</p>
       </div>
     );
   }
 
   const { currentPage, totalPages, sortOption, itemsPerPage } = props;
+  const currentPageNum = Number(currentPage);
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams();
@@ -41,27 +44,23 @@ export default function PaginationControls(props: {
   const getPageNumbers = () => {
     const pages = [];
 
-    if (Number(currentPage) !== 1) {
-      pages.push(1);
-    }
+    // Always show first page
+    pages.push(1);
 
-    if (currentPage > 2) {
+    // Add ellipsis and current page if needed
+    if (currentPageNum > 2) {
       pages.push("...");
-      pages.push(currentPage - 1);
+    }
+    if (currentPageNum !== 1 && currentPageNum !== totalPages) {
+      pages.push(currentPageNum);
     }
 
-    if (currentPage !== 1 && currentPage !== totalPages) {
-      pages.push(currentPage);
-    }
-
-    if (currentPage < totalPages - 2) {
-      pages.push(Number(currentPage) + 1);
+    // Add ellipsis and last page if needed
+    if (currentPageNum < totalPages - 1) {
       pages.push("...");
-    } else if (currentPage < totalPages - 1) {
-      pages.push(Number(currentPage) + 1);
     }
-
-    if (Number(currentPage) !== totalPages) {
+    // Only show last page if it's different from first page
+    if (totalPages !== 1) {
       pages.push(totalPages);
     }
 
@@ -73,43 +72,40 @@ export default function PaginationControls(props: {
       <Pagination className="my-6">
         <PaginationContent>
           <PaginationItem>
-          <PaginationPrevious
-            href={currentPage > 1 ? createPageUrl(Number(currentPage) - 1) : "#"}
-            aria-disabled={currentPage <= 1}
-            className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
-          />
-        </PaginationItem>
+            <PaginationPrevious
+              href={currentPageNum > 1 ? createPageUrl(currentPageNum - 1) : "#"}
+              aria-disabled={currentPageNum <= 1}
+              className={currentPageNum <= 1 ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
 
-        {getPageNumbers().map((page, index) =>
-          page === "..." ? (
-            <PaginationItem key={index}>
-              <PaginationEllipsis />
-            </PaginationItem>
-          ) : (
-            <PaginationItem key={index}>
-              <PaginationLink
-                href={createPageUrl(page as number)}
-                isActive={page === currentPage}
-              >
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          )
-        )}
+          {getPageNumbers().map((page, index) =>
+            page === "..." ? (
+              <PaginationItem key={index}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href={createPageUrl(page as number)}
+                  isActive={page === currentPageNum}
+                  className={page === currentPageNum ? "bg-secondary" : ""}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
 
-        <PaginationItem>
-          <PaginationNext
-            href={
-              currentPage < totalPages ? createPageUrl(Number(currentPage) + 1) : "#"
-            }
-            aria-disabled={currentPage >= totalPages}
-            className={
-              currentPage >= totalPages ? "pointer-events-none opacity-50" : ""
-            }
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+          <PaginationItem>
+            <PaginationNext
+              href={currentPageNum < totalPages ? createPageUrl(currentPageNum + 1) : "#"}
+              aria-disabled={currentPageNum >= totalPages}
+              className={currentPageNum >= totalPages ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </>
   );
 }
