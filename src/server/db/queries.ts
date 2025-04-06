@@ -14,7 +14,9 @@ export async function getProducts() {
 
 export async function getCategoryCount() {
   try {
-    const result = await db.select({ count: sql<number>`COUNT(*)` }).from(categories);
+    const result = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(categories);
     return { success: true, data: result[0]?.count ?? 0 };
   } catch (error) {
     console.error("Failed to fetch category count", error);
@@ -107,7 +109,12 @@ export async function getProductsByPageAndSort(
   }
 }
 
-export async function getProductsByCategoryId(categoryId: number, sort: string, page: number, itemsPerPage: number) {
+export async function getProductsByCategoryId(
+  categoryId: number,
+  sort: string,
+  page: number,
+  itemsPerPage: number,
+) {
   try {
     console.log("categoryId", categoryId);
     console.log("sort", sort);
@@ -121,24 +128,23 @@ export async function getProductsByCategoryId(categoryId: number, sort: string, 
       .limit(itemsPerPage)
       .offset(offset);
 
-      if (sort === "price-asc") {
-        return { success: true, data: result.sort((a, b) => a.price - b.price) };
-      } else if (sort === "price-desc") {
-        return { success: true, data: result.sort((a, b) => b.price - a.price) };
-      } else if (sort === "newest") {
-        return {
-          success: true,
-          data: result.sort((a, b) => b.createdAt - a.createdAt),
-        };
-      } else if (sort === "oldest") {
-        return {
-          success: true,
-          data: result.sort((a, b) => a.createdAt - b.createdAt),
-        };
-      } else {
-        return { success: true, data: result };
-      }
-
+    if (sort === "price-asc") {
+      return { success: true, data: result.sort((a, b) => a.price - b.price) };
+    } else if (sort === "price-desc") {
+      return { success: true, data: result.sort((a, b) => b.price - a.price) };
+    } else if (sort === "newest") {
+      return {
+        success: true,
+        data: result.sort((a, b) => b.createdAt - a.createdAt),
+      };
+    } else if (sort === "oldest") {
+      return {
+        success: true,
+        data: result.sort((a, b) => a.createdAt - b.createdAt),
+      };
+    } else {
+      return { success: true, data: result };
+    }
   } catch (error) {
     console.error("Failed to fetch products by category id", error);
     return { success: false, error: error };
@@ -185,7 +191,10 @@ export async function getTotalProductQuantityByCategoryId(categoryId: number) {
       .where(eq(products.categoryId, categoryId));
     return { success: true, data: result[0]?.total ?? 0 };
   } catch (error) {
-    console.error("Failed to fetch total product quantity by category id", error);
+    console.error(
+      "Failed to fetch total product quantity by category id",
+      error,
+    );
     return { success: false, error: error };
   }
 }
