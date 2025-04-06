@@ -14,19 +14,27 @@ export async function CartItems() {
   return (
     <>
       {cart.length > 0 && (
-        <div className="pb-4">
-          <p className="font-semibold text-accent1">Delivers in 2-4 weeks</p>
-          <p className="text-sm text-gray-500">Need this sooner?</p>
+        <div className="mb-6">
+          <p className="text-sm font-medium text-primary">Delivers in 2-4 weeks</p>
+          <p className="text-sm text-muted-foreground">Need this sooner?</p>
         </div>
       )}
       {cart.length > 0 ? (
-        <div className="flex flex-col space-y-10">
+        <div className="space-y-6">
           {cart.map((item) => (
             <CartItem key={item.skuId} product={item} />
           ))}
         </div>
       ) : (
-        <p>No items in cart</p>
+        <div className="flex flex-col items-center justify-center py-12">
+          <p className="text-lg text-muted-foreground">Your cart is empty</p>
+          <Link
+            href="/"
+            className="mt-4 text-sm font-medium text-primary hover:text-primary/80"
+          >
+            Continue Shopping
+          </Link>
+        </div>
       )}
     </>
   );
@@ -36,53 +44,52 @@ function CartItem({ product }: { product: CartItem }) {
   if (!product) {
     return null;
   }
-  // limit to 2 decimal places
   const cost = (Number(product.price) * product.quantity).toFixed(2);
 
   return (
-    <div className="flex flex-row items-center justify-between border-t border-gray-200 pt-4">
+    <div className="flex flex-col space-y-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between sm:space-y-0">
       <Link
         prefetch={true}
         href={`/product/${product.slug}`}
+        className="flex flex-1 space-x-4"
       >
-        <div className="flex flex-row space-x-2">
-          <div className="flex h-24 w-24 items-center justify-center bg-gray-100">
-            <Image
-              loading="eager"
-              decoding="sync"
-              src={product.imageUrl ?? "/placeholder.svg"}
-              alt="Product"
-              width={256}
-              height={256}
-              quality={80}
-            />
-          </div>
-          <div className="max-w-[100px] flex-grow sm:max-w-full">
-            <h2 className="font-semibold">{product.name}</h2>
-            <p className="text-sm md:text-base">{product.description}</p>
-            <p className="text-sm md:text-base">{product.color} {product.size}</p>
-          </div>
+        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-border">
+          <Image
+            loading="eager"
+            decoding="sync"
+            src={product.imageUrl ?? "/placeholder.svg"}
+            alt={product.name}
+            width={96}
+            height={96}
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-base font-medium text-foreground truncate">{product.name}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {product.color} {product.size}
+          </p>
+          <p className="mt-1 text-sm font-medium text-foreground">
+            ${Number(product.price).toFixed(2)} each
+          </p>
         </div>
       </Link>
-      <div className="flex items-center justify-center md:space-x-10">
-        <div className="flex flex-col-reverse md:flex-row md:gap-4">
-          <p>{product.quantity}</p>
-          <div className="flex md:block">
-            <div className="min-w-8 text-sm md:min-w-24 md:text-base">
-              <p>${Number(product.price).toFixed(2)} each</p>
-            </div>
-          </div>
-          <div className="min-w-24">
-            <p className="font-semibold">${cost}</p>
-          </div>
+      <div className="flex items-center justify-between sm:ml-4 sm:flex-col sm:items-end sm:justify-between sm:space-y-4">
+        <div className="flex items-center space-x-4">
+          <span className="text-sm font-medium text-foreground">Qty: {product.quantity}</span>
+          <span className="text-base font-medium text-foreground">${cost}</span>
         </div>
         <form action={removeFromCart}>
-          <button type="submit">
+          <button
+            type="submit"
+            className="text-muted-foreground hover:text-foreground"
+            aria-label="Remove item"
+          >
             <input type="hidden" name="productSlug" value={product.slug} />
             <input type="hidden" name="skuId" value={product.skuId ?? ""} />
             <input type="hidden" name="color" value={product.color ?? ""} />
             <input type="hidden" name="size" value={product.size ?? ""} />
-            <X className="h-6 w-6 hover:cursor-pointer hover:text-gray-500" />
+            <X className="h-5 w-5" />
           </button>
         </form>
       </div>
@@ -98,5 +105,19 @@ export async function TotalCost() {
     0,
   );
 
-  return <span> ${totalCost.toFixed(2)}</span>;
+  return (
+    <div className="flex flex-col space-y-4">
+      <span className="text-lg font-semibold text-foreground">
+        Total: ${totalCost.toFixed(2)}
+      </span>
+      {cart.length > 0 && (
+        <Link
+          href="/checkout"
+        className="block w-full rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+      >
+          Proceed to Checkout
+        </Link>
+      )}
+    </div>
+  );
 }

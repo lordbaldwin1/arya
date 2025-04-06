@@ -4,12 +4,14 @@ import {
   getCart,
   updateCart,
   getAvailableStock,
+  detailedCart,
 } from "./cart";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 import { db } from "~/server/db";
 import { reservations, skus } from "~/server/db/schema";
 import { eq, and, sql } from "drizzle-orm";
+import { stripe } from "~/lib/stripe";
 
 export async function addToCart(prevState: unknown, formData: FormData) {
   try {
@@ -94,6 +96,28 @@ export async function addToCart(prevState: unknown, formData: FormData) {
     console.error("Failed to add to cart", error);
     return "Failed to add item to cart";
   }
+}
+
+export async function wipeCartForSession() {
+  "use server";
+  
+  const sessionId = (await cookies()).get("sessionId")?.value;
+  if (!sessionId) {
+    throw new Error("No session ID found");
+  }
+
+  // Set cart cookie to expire immediately
+  (await cookies()).set("cart", "", {
+    maxAge: 0,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  // Delete reservations from database
+  await db.transaction(async (tx) => {
+    await tx.delete(reservations).where(eq(reservations.sessionId, sessionId));
+  });
 }
 
 export async function removeFromCart(formData: FormData) {
@@ -249,5 +273,37 @@ export async function deleteReservation(sessionId: string, skuId: number) {
   } catch (error) {
     console.error("Failed to delete reservation", error);
     throw error; // Rethrow to handle in removeFromCart
+  }
+}
+
+export async function createPaymentIntent() {
+  try {
+    const cart = await detailedCart();
+    
+    // Calculate total amount
+    const amount = cart.reduce(
+      (total: number, item) => total + item.quantity * item.price * 100, // Convert to cents
+      0
+    );
+
+    // Add shipping cost (500 cents = $5.00)
+    const totalAmount = amount + 500;
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totalAmount,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        sessionId: (await cookies()).get("sessionId")?.value ?? "",
+      },
+    });
+
+    return { clientSecret: paymentIntent.client_secret };
+  } catch (error) {
+    console.error("Error creating payment intent:", error);
+    throw new Error("Failed to create payment intent");
   }
 }

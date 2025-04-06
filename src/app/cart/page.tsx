@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CartItems, TotalCost } from "./dynamic";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Order",
@@ -8,30 +9,39 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <main className="min-h-screen sm:p-4">
-      <div className="container mx-auto p-1 sm:p-3">
-        <div className="flex items-center justify-between border-b border-gray-200">
-          <h1 className="text-2xl">Your Shopping Bag</h1>
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground">Your Cart</h1>
         </div>
 
-        <div className="flex grid-cols-3 flex-col gap-8 pt-4 lg:grid">
-          <div className="col-span-2">
-            <Suspense>
-              <CartItems />
-            </Suspense>
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="rounded-lg bg-card p-6 shadow-sm">
+              <Suspense>
+                <CartItems />
+              </Suspense>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="rounded bg-gray-100 p-4">
-              <p className="font-semibold">
-                Total Cost:{" "}
-                <Suspense>
-                  <TotalCost />
-                </Suspense>
-              </p>
-              <p className="text-sm text-gray-500">
-                Applicable shipping and tax will be added.
-              </p>
+          <div className="lg:col-span-1">
+            <div className="sticky top-4 rounded-lg bg-card p-6 shadow-sm">
+              <div className="mb-6">
+                <p className="text-lg font-semibold text-foreground">
+                  Order Summary
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Applicable shipping and tax will be added at checkout.
+                </p>
+              </div>
+
+              <div className="border-t border-border pt-4">
+                <div className="flex items-center justify-between">
+                  <Suspense>
+                    <TotalCost />
+                  </Suspense>
+                </div>
+              </div>
             </div>
           </div>
         </div>
