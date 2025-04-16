@@ -13,6 +13,11 @@ const config = {
         hostname: 'images.unsplash.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'j6a7ablfvvoootdu.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
     ],
   },
 };

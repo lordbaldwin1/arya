@@ -109,7 +109,7 @@ export function ProductOptions(props: {
           {selectedSku ? (
             <div className="mt-6 space-y-2">
               <p className="text-2xl font-bold text-foreground">
-                ${(selectedSku.price / 100).toFixed(2)}
+                ${(selectedSku.price).toFixed(2)}
               </p>
               <p className="text-sm text-muted-foreground">
                 {selectedSku.quantity > 0
@@ -119,9 +119,6 @@ export function ProductOptions(props: {
             </div>
           ) : (
             <div className="mt-6 space-y-2">
-              <p className="text-2xl font-bold text-foreground">
-                ${(product.price / 100).toFixed(2)}
-              </p>
               <p className="text-sm text-muted-foreground">
                 Out of stock
               </p>
