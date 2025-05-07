@@ -116,10 +116,6 @@ export async function getProductsByCategoryId(
   itemsPerPage: number,
 ) {
   try {
-    console.log("categoryId", categoryId);
-    console.log("sort", sort);
-    console.log("page", page);
-    console.log("itemsPerPage", itemsPerPage);
     const offset = (page - 1) * itemsPerPage;
     const result = await db
       .select()

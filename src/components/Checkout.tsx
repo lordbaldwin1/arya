@@ -50,6 +50,7 @@ function PaymentForm() {
         setMessage("Processing your payment...");
       }
     } catch (error) {
+      console.error("Payment error:", error);
       setMessage("An unexpected error occurred.");
     } finally {
       setIsLoading(false);

@@ -1,5 +1,6 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
+
+import { usePathname } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -17,7 +18,6 @@ export default function PaginationControls(props: {
   itemsPerPage: number;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   
   if (props.totalPages <= 1) {
     return (
@@ -27,7 +27,7 @@ export default function PaginationControls(props: {
     );
   }
 
-  const { currentPage, totalPages, sortOption, itemsPerPage } = props;
+  const { currentPage, totalPages, sortOption } = props;
   const currentPageNum = Number(currentPage);
 
   const createPageUrl = (page: number) => {
