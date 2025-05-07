@@ -1,4 +1,97 @@
-# New Arya Jewelry Site
+# Arya Jewelry Storefront
+
+A jewelry e-commerce platform built with Next.js, featuring a responsive design, real-time inventory management, and secure checkout.
+
+## Features
+
+- **Product Lists**
+  - Browse all products or by categories
+  - Product pages with size and color options
+  - Stock management
+  - Pagination
+  - Multiple sorting options
+
+- **Shopping Cart**
+  - Session-based cart management
+  - Real-time stock reservation
+  - Automatic cart expiration
+
+- **User Experience**
+  - Responsive design for all screen sizes
+  - Modern UI
+  - Intuitive navigation
+
+## Technical Implementation
+
+### Cart Management
+- Session-based cart storage using cookies
+- Cart schema includes: productSlug, skuId, quantity, color, size
+- Automatic stock reservation when items are added to cart
+- Stock release on cart item removal or expiration
+
+### Product Management
+- Detailed product information including:
+  - Product details
+  - SKU information
+  - Product images
+  - Size and color variants
+- Real-time stock tracking
+- Pagination and sorting capabilities
+
+### Database Queries
+- Efficient product fetching with pagination
+- Category-based filtering
+- Dynamic sorting options
+- Total product count tracking
+
+## Development Status
+
+### Completed
+- [x] Pagination and sorting implementation
+- [x] Product pages with detailed views
+- [x] Shopping cart functionality
+- [x] Reservation expiration system
+- [x] Stripe integration
+
+### Future work
+- [ ] Quick-Add feature for product cards
+- [ ] More extensive testing
+- [ ] Additional UI/UX improvements
+
+## Technical Notes
+
+### Reservation System
+- Uses UUID sessionId stored in cookies
+- Automatic expiration of reservations through cron jobs
+
+### Pagination
+- URL-based page parameter
+- Dynamic offset calculation
+
+### Sorting
+- URL parameter-based sort order
+- Supported options:
+  - Price ascending/descending
+  - Alphabetical (A-Z, Z-A)
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies
+3. Set up environment variables
+4. Run the development server
+
+## Environment Variables
+
+Check `.env.example` for required environment variables
+
+## Contributing
+
+Please read our contributing guidelines before submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 # TODO
 - [x] Add pagination/sorting
@@ -7,7 +100,8 @@
 - [x] Add cron job for reservation expiration
 - [x] Setup stripe
 - [] Look into adding 'Quick-Add' to product cards (selecting size/color and display price on hover)
-- [] Look into testing
+
+## Notes taken during development
 
 # Understanding Reservation Expiration
 - What needs to update?
