@@ -23,7 +23,7 @@ export function Search({
       {isOpen ? (
         <SearchNavBar handleOpenSearch={handleOpenSearch} />
       ) : (
-        <Button className="cursor-pointer" variant="ghost" size="icon" onClick={handleOpenSearch}>
+        <Button className="cursor-pointer hover:text-muted-foreground" variant="ghost" size="icon" onClick={handleOpenSearch}>
           <SearchIcon className="h-4 w-4" />
         </Button>
       )}
@@ -123,7 +123,7 @@ export function SearchNavBar({
             autoCapitalize="off"
             autoCorrect="off"
             type="text"
-            placeholder="Search"
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -201,7 +201,7 @@ export function SearchNavBar({
           )}
         </div>
         <Button
-          className="ml-2 cursor-pointer"
+          className="ml-2 cursor-pointer hover:text-muted-foreground"
           variant="ghost"
           size="icon"
           onClick={handleOpenSearch}

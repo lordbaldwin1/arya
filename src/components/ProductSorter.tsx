@@ -29,6 +29,8 @@ export default function ProductSorter() {
     } else {
       params.set("sort", sortValue);
     }
+    // Reset to page 1 when changing sort order
+    params.set("page", "1");
     router.push(`${pathname}?${params.toString()}`);
   };
 

@@ -84,21 +84,21 @@ export function NonSearchNavbar({
               </SheetDescription>
               <SheetClose asChild aria-label="Close navigation menu">
                 <Link prefetch={true} href="/">
-                  <button className="tracking-wider transition-colors hover:text-gray-600">
+                  <button className="tracking-wider transition-colors hover:text-muted-foreground">
                     HOME
                   </button>
                 </Link>
               </SheetClose>
               <SheetClose asChild aria-label="Close navigation menu">
                 <Link prefetch={true} href="/all">
-                  <button className="tracking-wider transition-colors hover:text-gray-600">
+                  <button className="tracking-wider transition-colors hover:text-muted-foreground">
                     ALL PRODUCTS
                   </button>
                 </Link>
               </SheetClose>
               <SheetClose asChild aria-label="Close navigation menu">
                 <Link prefetch={true} href="/categories">
-                  <button className="tracking-wider transition-colors hover:text-gray-600">
+                  <button className="tracking-wider transition-colors hover:text-muted-foreground">
                     CATEGORIES
                   </button>
                 </Link>
@@ -119,7 +119,7 @@ export function NonSearchNavbar({
 
         <div className="flex items-center justify-end gap-4">
           <Search isOpen={isSearchOpen} handleOpenSearch={handleOpenSearch} />
-          <Link prefetch={true} className="hover:text-gray-500" href="/cart">
+          <Link prefetch={true} className="hover:text-muted-foreground" href="/cart">
             <ShoppingBagIcon className="h-5 w-5" />
           </Link>
           <LightModeToggle />

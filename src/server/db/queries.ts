@@ -1,4 +1,4 @@
-import { eq, like, sql } from "drizzle-orm";
+import { eq, like, sql, desc } from "drizzle-orm";
 import { db } from "./index";
 import { categories, products, skus, productImages } from "./schema";
 
@@ -80,29 +80,21 @@ export async function getProductsByPageAndSort(
 ) {
   try {
     const offset = (page - 1) * itemsPerPage;
+    
     const result = await db
       .select()
       .from(products)
+      .orderBy(
+        sort === "price-desc" ? desc(products.price) :
+        sort === "price-asc" ? products.price :
+        sort === "newest" ? desc(products.createdAt) :
+        sort === "oldest" ? products.createdAt :
+        products.id
+      )
       .limit(itemsPerPage)
       .offset(offset);
 
-    if (sort === "price-asc") {
-      return { success: true, data: result.sort((a, b) => a.price - b.price) };
-    } else if (sort === "price-desc") {
-      return { success: true, data: result.sort((a, b) => b.price - a.price) };
-    } else if (sort === "newest") {
-      return {
-        success: true,
-        data: result.sort((a, b) => b.createdAt - a.createdAt),
-      };
-    } else if (sort === "oldest") {
-      return {
-        success: true,
-        data: result.sort((a, b) => a.createdAt - b.createdAt),
-      };
-    } else {
-      return { success: true, data: result };
-    }
+    return { success: true, data: result };
   } catch (error) {
     console.error("Failed to fetch products", error);
     return { success: false, error: error };

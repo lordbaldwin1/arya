@@ -38,7 +38,7 @@ export default async function Page() {
 
         <div className="grid gap-8 lg:grid-cols-12">
           <div className="lg:col-span-8">
-            <div className="rounded-xl bg-card p-6 shadow-sm">
+            <div className="rounded-xl bg-card border-2 border-border p-6 shadow-sm">
               <Suspense>
                 <CartItems />
               </Suspense>
@@ -46,7 +46,7 @@ export default async function Page() {
           </div>
 
           <div className="lg:col-span-4">
-            <div className="sticky top-4 rounded-xl bg-card p-6 shadow-sm">
+            <div className="sticky top-4 rounded-xl bg-card border-2 border-border p-6 shadow-sm">
               <div className="mb-6">
                 <h2 className="text-xl font-semibold text-foreground">
                   Order Summary

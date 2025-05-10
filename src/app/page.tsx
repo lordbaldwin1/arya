@@ -44,7 +44,7 @@ export default async function HomePage() {
             
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               <Link prefetch={true} href="/categories/rings">
-                <Button size="lg" className="text-lg px-8 py-6 bg-primary hover:bg-primary/90">
+                <Button size="lg" className="cursor-pointer text-lg px-8 py-6 bg-primary hover:bg-primary/90">
                   Explore Collection
                 </Button>
               </Link>
