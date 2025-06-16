@@ -17,7 +17,7 @@ export default function ProductCard(props: { product: ProductCardProps }) {
   return (
     <div
       key={product.id}
-      className="group bg-background/30 backdrop-blur-sm border-2 border-border/80 rounded-xl p-4 flex flex-col items-center transition-all duration-300 hover:border-accent hover:shadow-md"
+      className="group bg-background/30 backdrop-blur-sm border-2 border-border/80 p-4 flex flex-col items-center transition-all duration-300 hover:border-accent hover:shadow-md"
     >
       <Link
         prefetch={true}
@@ -25,7 +25,7 @@ export default function ProductCard(props: { product: ProductCardProps }) {
         className="block w-full"
         style={{ position: "relative", width: "100%", height: "auto" }}
       >
-        <div className="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-muted">
+        <div className="relative w-full aspect-square mb-4 overflow-hidden bg-muted">
           <Image
             src={product.imageUrl ?? "/placeholder.svg"}
             alt={`A photo of ${product.name}`}

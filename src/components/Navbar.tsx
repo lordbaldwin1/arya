@@ -48,17 +48,17 @@ export function NonSearchNavbar({
         <div className="hidden items-baseline justify-center gap-4 md:flex lg:flex">
           <Link
             prefetch={true}
-            className="text-md font-semibold hover:text-gray-500"
+            className="text-md hover:text-gray-500"
             href="/categories"
           >
             Categories
           </Link>
           <Link
             prefetch={true}
-            className="text-md font-semibold hover:text-gray-500"
+            className="text-md hover:text-gray-500"
             href="/all"
           >
-            Shop All
+            All Products
           </Link>
         </div>
 
@@ -117,10 +117,10 @@ export function NonSearchNavbar({
           </Link>
         </div>
 
-        <div className="flex items-center justify-end gap-4">
+        <div className="flex items-center justify-end gap-2">
           <Search isOpen={isSearchOpen} handleOpenSearch={handleOpenSearch} />
           <Link prefetch={true} className="hover:text-muted-foreground" href="/cart">
-            <ShoppingBagIcon className="h-5 w-5" />
+            <ShoppingBagIcon className="h-4 w-4 mr-1" />
           </Link>
           <LightModeToggle />
         </div>

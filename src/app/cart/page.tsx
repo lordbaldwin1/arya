@@ -4,7 +4,8 @@ import { CartItems, TotalCost } from "./dynamic";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Order",
+  title: "Shopping Cart - Arya",
+  description: "Review your selected jewelry pieces and proceed to checkout.",
 };
 
 export default async function Page() {

@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/20">
+      <body className="min-h-screen">
         <div className="relative flex min-h-screen flex-col">
           {/* Decorative Elements */}
           <div className="fixed inset-0 pointer-events-none">

@@ -21,7 +21,7 @@ export default function CategoryCard(props: CategoryCardProps) {
       {categories.map((category) => (
         <div
           key={category.id}
-          className="group bg-card border border-border rounded-xl p-4 flex flex-col items-center transition-all duration-300 hover:border-accent hover:shadow-md"
+          className="group bg-card border border-border p-4 flex flex-col items-center transition-all duration-300 hover:border-accent hover:shadow-md"
         >
           <Link
             prefetch={true}
@@ -29,7 +29,7 @@ export default function CategoryCard(props: CategoryCardProps) {
             className="block w-full"
             style={{ position: "relative", width: "100%", height: "auto" }}
           >
-            <div className="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-muted">
+            <div className="relative w-full aspect-square mb-4 overflow-hidden bg-muted">
               <Image
                 src={category.imageUrl ?? "/placeholder.svg"}
                 alt={`A photo of ${category.name}`}

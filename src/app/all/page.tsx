@@ -3,6 +3,12 @@ import ProductCard from "~/components/ProductCard";
 import ProductSorter from "~/components/ProductSorter";
 import { getProductsByPageAndSort, getTotalProductQuantity } from "~/server/db/queries";
 import Link from "next/link";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "All Products - Arya",
+  description: "Browse our complete collection of jewelry pieces. Find your perfect accessory from our wide range of designs.",
+};
 
 const ITEMS_PER_PAGE = 50;
 

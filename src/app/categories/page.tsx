@@ -2,6 +2,12 @@ import CategoryCard from "~/components/CategoryCard";
 import { getCategories, getCategoryCount } from "~/server/db/queries";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Categories - Arya",
+  description: "Browse our jewelry collection by category. Find rings, necklaces, earrings, and more.",
+};
 
 export default async function Page() {
   try {

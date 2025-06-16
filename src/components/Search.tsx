@@ -23,7 +23,7 @@ export function Search({
       {isOpen ? (
         <SearchNavBar handleOpenSearch={handleOpenSearch} />
       ) : (
-        <Button className="cursor-pointer hover:text-muted-foreground" variant="ghost" size="icon" onClick={handleOpenSearch}>
+        <Button className="cursor-pointer hover:text-muted-foreground" variant="link" size="icon" onClick={handleOpenSearch}>
           <SearchIcon className="h-4 w-4" />
         </Button>
       )}
@@ -202,7 +202,7 @@ export function SearchNavBar({
         </div>
         <Button
           className="ml-2 cursor-pointer hover:text-muted-foreground"
-          variant="ghost"
+          variant="link"
           size="icon"
           onClick={handleOpenSearch}
         >

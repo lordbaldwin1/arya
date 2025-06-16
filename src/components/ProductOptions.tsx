@@ -75,7 +75,7 @@ export function ProductOptions(props: {
                         <Image
                           src={image.imageUrl}
                           alt={product.name}
-                          className="object-cover transition-transform duration-300 hover:scale-105"
+                          className="object-cover transition-transform duration-300"
                           sizes="(max-width: 1024px) 100vw, 50vw"
                           fill
                           priority={true}
