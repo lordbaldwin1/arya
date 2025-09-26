@@ -55,7 +55,6 @@ A jewelry e-commerce platform built with Next.js, featuring a responsive design,
 
 ### Future work
 - [ ] Quick-Add feature for product cards
-- [ ] More extensive testing
 - [ ] Additional UI/UX improvements
 
 ## Technical Notes
